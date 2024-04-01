@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/vuetify@3.0/dist/vuetify.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js",
+        "vuetify": "https://cdn.jsdelivr.net/npm/vuetify@3.4.10/dist/vuetify.esm.min.js"
+      }
+    }
+  </script>
+  <script type="module">
+    import { createApp, ref, reactive } from 'vue'
+    import { createVuetify } from 'vuetify'
+
+    const vuetify = createVuetify()
+    const app = createApp({
+      setup() {
+        const state = reactive({
+          targetUrl: '',
+          loading: false,
+        })
+
+        const onDownload = async () => {
+          state.loading = true
+          const body = JSON.stringify({
+            url: state.targetUrl,
+          })
+          const response = await fetch('http://localhost:8080/pdf', {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              'x-client-key': '05318721421142ef8bc8e0f864b2ed97'
+            },
+            body,
+          })
+          const disposition = response.headers.get('content-disposition')
+          const fileName = decodeURIComponent(
+            disposition.replace(/^.*UTF-8''/, '')
+          )
+          console.log(fileName)
+          const blob = await response.blob()
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = fileName
+          a.click()
+          URL.revokeObjectURL(url)
+
+          state.loading = false
+        }
+
+        return {
+          state,
+          onDownload,
+        }
+      },
+    })
+
+    app.use(vuetify)
+    app.mount('#app')
+  </script>
+
+  <div id="app">
+    <v-card
+      class="mx-auto pa-12 pb-8"
+      elevation="8"
+      max-width="448"
+      rounded="lg"
+    >
+      <div class="text-subtitle-1 text-medium-emphasis mb-2">
+        Download Images
+      </div>
+      <v-text-field
+        density="compact"
+        variant="outlined"
+        clearable
+        label="url"
+        v-model="state.targetUrl"
+        single-line
+      ></v-text-field>
+      <v-btn :loading="state.loading" text @click="onDownload"
+        >ダウンロード</v-btn
+      >
+    </v-card>
+  </div>
+</html>
