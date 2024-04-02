@@ -38,7 +38,7 @@
           const body = JSON.stringify({
             url: state.targetUrl,
           })
-          const response = await fetch('http://localhost:8080/pdf', {
+          const response = await fetch('###BackendUrl###', {
             method: 'POST',
             mode: 'cors',
             headers: {
