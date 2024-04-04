@@ -36,7 +36,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Change url
         run: |
-          sed -i -e "s@##BackendUrl##@${{ env.BACKEND_URL }}@g" ./index.html
+          sed -i -e "s@###BackendUrl###@${{ env.BACKEND_URL }}@g" ./index.html
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
