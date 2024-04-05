@@ -22,7 +22,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  BACKEND_URL: 'http://localhost:8080/pdf' # Workflowスコープの環境変数
+  BACKEND_URL: 'https://pdf-converter-8spa.onrender.com/pdf' # Workflowスコープの環境変数
 
 jobs:
   # Single deploy job since we're just deploying
